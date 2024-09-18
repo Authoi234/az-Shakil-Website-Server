@@ -1,0 +1,32 @@
+[
+    {
+        "image": "https://i.ibb.co.com/9cGYtxX/javascript.png",
+        "title": "জাভাস্ক্রিপ্ট ফর বিগিনার্স",
+        "discription":" বিগিনার দের জন্য সম্পূর্ণ ফ্রি জাভাস্ক্রিপ্ট সিরিজ।",
+        "id": 1
+    },
+    {
+        "image": "https://i.ibb.co.com/9cGYtxX/javascript.png",
+        "title": "মডার্ন জাভাস্ক্রিপ্ট ফর বিগিনার্স",
+        "discription":" বিগিনার দের জন্য সম্পূর্ণ ফ্রি মডার্ন জাভাস্ক্রিপ্ট প্লেলিস্ট",
+        "id": 2
+    },
+    {
+        "image": "https://i.ibb.co.com/J3R6xhy/study-In-China.jpg",
+        "title": "গাইডলাইন টুঁ স্টাডি ইন চায়না ",
+        "discription":" চীন এ স্টাডি এর জন্য সম্পূর্ণ ফ্রী গাইডলাইন প্লেলিস্ট",
+        "id": 3
+    },
+    {
+        "image": "https://i.ibb.co.com/3MX7gpN/study-In-Japan.jpg",
+        "title": "গাইডলাইন টুঁ স্টাডি ইন জাপান",
+        "discription":" জাপান এ স্টাডি এর জন্য সম্পূর্ণ ফ্রী গাইডলাইন",
+        "id": 4
+    },
+    {
+        "image": "https://i.ibb.co.com/F4z9xry/study-In-US.jpg",
+        "title": "গাইডলাইন টুঁ স্টাডি ইন ইউ এস",
+        "discription":" ইউ. এস. এ. তে স্টাডি এর জন্য সম্পূর্ণ ফ্রী গাইডলাইন",
+        "id": 5
+    }
+]

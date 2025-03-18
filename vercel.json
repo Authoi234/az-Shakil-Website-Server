@@ -8,16 +8,8 @@
     ],
     "routes": [
         {
-            "src": "/videos/.*",
-            "dest": "/index.js"
-        },
-        {
             "src": "/(.*)",
-            "dest": "/public/$1"
-        },
-        {
-            "src": "/",
-            "dest": "/index.js"
+            "dest": "index.js"
         }
     ]
 }

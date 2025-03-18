@@ -19,10 +19,17 @@ const client = new MongoClient(uri, {
 });
 async function run() {
     try {
-        
+        const usersCollection = client.db('azShakil').collection('users');
+
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email };
+            const user = await usersCollection.findOne(query);
+            res.send({ isAdmin: user?.role === 'admin' });
+        })
     }
-    finally{
-        
+    finally {
+
     }
 }
 run().catch(console.log);

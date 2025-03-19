@@ -7,17 +7,8 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config();
 const cors = require('cors');
 
-const allowedOrigins = [
-    "http://localhost:3000",
-    "https://az-shakil-website.web.app/"
-];
-
 // middleware
-app.use(cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(cors());
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.6iupoas.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;

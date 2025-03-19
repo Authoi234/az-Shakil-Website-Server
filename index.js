@@ -7,8 +7,17 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config();
 const cors = require('cors');
 
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://az-shakil-website.web.app/"
+];
+
 // middleware
-app.use(cors());
+app.use(cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.6iupoas.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -28,8 +37,16 @@ async function run() {
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email };
-            const user = await usersCollection.findOne(query);
-            res.send({ isAdmin: user?.role === 'admin' });
+            try {
+                const user = await usersCollection.findOne(query);
+                if (!user) {
+                    return res.status(404).json({ error: "User not found" });
+                }
+                res.send({ isAdmin: user?.role === 'admin' });
+            } catch (error) {
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+
         })
     }
     finally {

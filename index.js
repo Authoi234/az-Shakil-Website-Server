@@ -1,11 +1,15 @@
 const express = require('express');
-const cors = require('cors');
 const port = process.env.PORT || 5000;
 const app = express();
 const fs = require('fs');
 const path = require('path');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config();
+const cors = require('cors');
+
+// middleware
+app.use(cors());
+app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.6iupoas.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -40,12 +44,6 @@ const readJSONFile = (filename) => {
     return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 };
 
-// middleware
-app.use(cors());
-app.use(express.json());
-
-// zSdhRZFIX8Hh7zSF
-// Az-Shakil-Website
 
 app.get('/', (req, res) => {
     res.send('As Shakil Website Is successfully running');

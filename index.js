@@ -8,7 +8,11 @@ require('dotenv').config();
 const cors = require('cors');
 
 // middleware
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // Allow requests from this origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Allow these methods
+    credentials: true, // Allow cookies and credentials
+}));
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.6iupoas.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -23,6 +27,8 @@ const client = new MongoClient(uri, {
 });
 async function run() {
     try {
+        await client.connect();
+        console.log("Connected to MongoDB!");
         const usersCollection = client.db('azShakil').collection('users');
 
         app.get('/users/admin/:email', async (req, res) => {

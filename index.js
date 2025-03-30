@@ -1,11 +1,11 @@
 const express = require('express');
-const port = process.env.PORT || 5000;
-const app = express();
-const fs = require('fs');
-const path = require('path');
+const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config();
-const cors = require('cors');
+
+const port = process.env.PORT || 5000;
+
+const app = express();
 
 // middleware
 app.use(cors());
@@ -21,6 +21,7 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+
 async function run() {
     try {
         
@@ -30,5 +31,9 @@ async function run() {
     }
 }
 run().catch(console.log);
+
+app.get('/', (req, res) => {
+    res.send('Doctors Portal server is running')
+})
 
 app.listen(port, () => console.log(`Az Shakil website Server is running on port ${port}.`));

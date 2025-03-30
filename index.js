@@ -31,29 +31,4 @@ async function run() {
 }
 run().catch(console.log);
 
-// json reader
-const readJSONFile = (filename) => {
-    const filePath = path.join(__dirname, 'public', filename);
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-};
-
-
-app.get('/', (req, res) => {
-    res.send('As Shakil Website Is successfully running');
-});
-
-app.get('/videos/:id', async (req, res) => {
-    const videos = readJSONFile('videos.json');
-    const id = req.params.id;
-    const video = videos.find(singleVideo => singleVideo.id === Number(id));
-    res.send(video);
-})
-
-app.get('/videos/', async (req, res) => {
-    const videosData = readJSONFile('videosData.json');
-    res.send(videosData);
-})
-
-
-
 app.listen(port, () => console.log(`Az Shakil website Server is running on port ${port}.`));

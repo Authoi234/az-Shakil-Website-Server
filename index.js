@@ -24,9 +24,13 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
+        await client.connect();
+
         const appointmentOptionsCollection = client.db('azShakil').collection('appointmentOptions');
         const bookingsCollection = client.db('azShakil').collection('bookings');
         const usersCollection = client.db('azShakil').collection('users');
+        const blogsCollection = client.db('azShakil').collection('blogsCollection');
+        const requestsCollection = client.db('azShakil').collection('requestsCollection');
 
         app.get('/appointmentOptions', async (req, res) => {
             const date = req.query.date;
@@ -63,6 +67,23 @@ async function run() {
             res.send(result);
         });
 
+        app.post('/blogs', async (req, res) => {
+            const blog = req.body;
+            const result = await blogsCollection.insertOne(blog);
+            res.send(result);
+        });
+
+        app.get("/blogs", async (req, res) => {
+            const blogs = await blogsCollection.find({}).toArray();
+            res.send(blogs);
+        })
+
+        app.get("/blogs/:id", async (req, res) => {
+            const id = req.params.id;
+            const blog = await blogsCollection.findOne({ _id: new ObjectId(id) });
+            res.send(blog);
+        })
+
         app.get('/bookings', async (req, res) => {
             const { status, type } = req.query;
 
@@ -86,16 +107,48 @@ async function run() {
             res.send(result)
         });
 
+
         app.delete('/bookings/:id', async (req, res) => {
             const id = req.params.id.trim();
-            const result = await bookingsCollection.deleteOne({_id: new ObjectId(id)});
+            const result = await bookingsCollection.deleteOne({ _id: new ObjectId(id) });
             res.send(result)
         });
 
         app.get("/users", async (req, res) => {
             const users = await usersCollection.find({}).toArray();
             res.send(users);
-        })
+        });
+        app.get("/user", async (req, res) => {
+            const { email } = req.query;
+            const query = { email: email }
+            const user = await usersCollection.findOne(query);
+            res.send(user);
+        });
+        app.post("/partnerRequest", async (req, res) => {
+            const request = req.body;
+            const result = await requestsCollection.insertOne(request);
+            res.send(result);
+        });
+        app.get('/partnerRequest', async (req, res) => {
+            const result = await requestsCollection.find({}).toArray();
+            res.send(result);
+        });
+        app.delete('/partnerRequest/:id', async (req, res) => {
+            const id = req.params.id.trim();
+            const result = await requestsCollection.deleteOne({ _id: new ObjectId(id) });
+            res.send(result)
+        });
+         app.patch('/partnerRequest/:id', async (req, res) => {
+            const id = req.params.id.trim();
+            const { status } = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: { status }
+            };
+            console.log(id)
+            const result = await requestsCollection.updateOne(filter, updateDoc);
+            res.send(result)
+        });
     }
     finally {
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const nodemailer = require("nodemailer");
 require('dotenv').config();
 
 const port = process.env.PORT || 5000;
@@ -20,6 +21,15 @@ const client = new MongoClient(uri, {
         strict: true,
         deprecationErrors: true,
     }
+});
+
+// nodemailer transport
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: "jawadkhan.authoi@gmail.com",
+        pass: process.env.GOOGLE_APP_PASSWORD, // Must be a real app password
+    },
 });
 
 async function run() {
@@ -63,6 +73,30 @@ async function run() {
                 const message = `you already have a booking on : ${booking.appointmentDate}`;
                 return res.send({ acknowledge: false, message: message });
             }
+
+            transporter.sendMail({
+                to: `${booking.email}`,
+                subject: "Apprent Booking Request send",
+                html: `
+                    <div style="font-family: Arial, sans-serif; background-color: #f7f9fc; padding: 20px;">
+                        <div style="max-width: 600px; background-color: #ffffff; padding: 30px; margin: auto; border: 1px solid #e0e0e0; border-radius: 6px;">
+                            <h2 style="color: #004085;">Apprent - Appointment Request</h2>
+                            <p>Hello,</p>
+                            <p>An Appointment from <strong>${booking.client}</strong> has been requested to <strong>Apprent</strong>.</p>
+                            <p>We'll let you know once it is <strong>approved</strong> or <strong>cancelled</strong>.</p>
+                            <p>Thank you,<br>The Apprent Team</p>
+                            <div style="margin-top: 30px; font-size: 12px; color: #999; text-align: center;">
+                                &copy; 2025 Apprent. All rights reserved.
+                            </div>
+                        </div>
+                    </div>
+                `,
+            }).then(() => {
+                console.log("Email Sent to client")
+            }).catch(err => {
+                console.log(err)
+            })
+
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
         });
@@ -102,7 +136,29 @@ async function run() {
             const updateDoc = {
                 $set: { status }
             };
+            const booking = await bookingsCollection.findOne({_id: new ObjectId(id)}).toArray();
             console.log(id)
+            transporter.sendMail({
+                to: `${booking.email}`,
+                subject: `Apprent Booking Request ${status}`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; background-color: #f7f9fc; padding: 20px;">
+                        <div style="max-width: 600px; background-color: #ffffff; padding: 30px; margin: auto; border: 1px solid #e0e0e0; border-radius: 6px;">
+                            <h2 style="color: #004085;">Apprent - Appointment Request ${status}</h2>
+                            <p>Hello,</p>
+                            <p>Your Appointment request has been ${status} to <strong>Apprent</strong>.</p>
+                            <p>Thank you,<br>The Apprent Team</p>
+                            <div style="margin-top: 30px; font-size: 12px; color: #999; text-align: center;">
+                                &copy; 2025 Apprent. All rights reserved.
+                            </div>
+                        </div>
+                    </div>
+                `,
+            }).then(() => {
+                console.log("Email Sent to client")
+            }).catch(err => {
+                console.log(err)
+            })
             const result = await bookingsCollection.updateOne(filter, updateDoc);
             res.send(result)
         });
@@ -138,7 +194,7 @@ async function run() {
             const result = await requestsCollection.deleteOne({ _id: new ObjectId(id) });
             res.send(result)
         });
-         app.patch('/partnerRequest/:id', async (req, res) => {
+        app.patch('/partnerRequest/:id', async (req, res) => {
             const id = req.params.id.trim();
             const { status } = req.body;
             const filter = { _id: new ObjectId(id) };
@@ -160,4 +216,5 @@ app.get('/', (req, res) => {
     res.send('Doctors Portal server is running')
 })
 
-app.listen(port, () => console.log(`Az Shakil website Server is running on port ${port}.`));
+
+app.listen(port, () => console.log(`Apprent is running on port ${port}.`));

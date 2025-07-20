@@ -136,7 +136,7 @@ async function run() {
             const updateDoc = {
                 $set: { status }
             };
-            const booking = await bookingsCollection.findOne({_id: new ObjectId(id)}).toArray();
+            const booking = await bookingsCollection.findOne({ _id: new ObjectId(id) }).toArray();
             console.log(id)
             transporter.sendMail({
                 to: `${booking.email}`,
@@ -183,6 +183,28 @@ async function run() {
         app.post("/partnerRequest", async (req, res) => {
             const request = req.body;
             const result = await requestsCollection.insertOne(request);
+            transporter.sendMail({
+                to: `${request.email}`,
+                subject: "Apprent Partnership Request send",
+                html: `
+                    <div style="font-family: Arial, sans-serif; background-color: #f7f9fc; padding: 20px;">
+                        <div style="max-width: 600px; background-color: #ffffff; padding: 30px; margin: auto; border: 1px solid #e0e0e0; border-radius: 6px;">
+                            <h2 style="color: #004085;">Apprent - Appointment Request</h2>
+                            <p>Hello,</p>
+                            <p>An Partnership from <strong>${request.contactPerson}</strong> from <strong>${request.organizationName}</strong> has been requested to <strong>Apprent</strong>.</p>
+                            <p>We'll let you know once it is <strong>Approved</strong> or <strong>Cancelled</strong>.</p>
+                            <p>Thank you,<br>The Apprent Team</p>
+                            <div style="margin-top: 30px; font-size: 12px; color: #999; text-align: center;">
+                                &copy; 2025 Apprent. All rights reserved.
+                            </div>
+                        </div>
+                    </div>
+                `,
+            }).then(() => {
+                console.log("Email Sent to client")
+            }).catch(err => {
+                console.log(err)
+            })
             res.send(result);
         });
         app.get('/partnerRequest', async (req, res) => {
@@ -202,7 +224,29 @@ async function run() {
                 $set: { status }
             };
             console.log(id)
+            const request = await requestsCollection.findOne({_id: new ObjectId(id)})
             const result = await requestsCollection.updateOne(filter, updateDoc);
+            transporter.sendMail({
+                to: `${request.email}`,
+                subject: "Apprent Partnership Request send",
+                html: `
+                    <div style="font-family: Arial, sans-serif; background-color: #f7f9fc; padding: 20px;">
+                        <div style="max-width: 600px; background-color: #ffffff; padding: 30px; margin: auto; border: 1px solid #e0e0e0; border-radius: 6px;">
+                            <h2 style="color: #004085;">Apprent - Appointment Request</h2>
+                            <p>Hello,</p>
+                            <p>An Partnership Request from <strong>${request.contactPerson}</strong> from <strong>${request.organizationName}</strong> has been ${status} to <strong>Apprent</strong>.</p>
+                            <p>Thank you,<br>The Apprent Team</p>
+                            <div style="margin-top: 30px; font-size: 12px; color: #999; text-align: center;">
+                                &copy; 2025 Apprent. All rights reserved.
+                            </div>
+                        </div>
+                    </div>
+                `,
+            }).then(() => {
+                console.log("Email Sent to client")
+            }).catch(err => {
+                console.log(err)
+            })
             res.send(result)
         });
     }

@@ -9,7 +9,10 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+    origin:  "*",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+}));
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.6iupoas.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
-    "postinstall": "node fix-gopd.js"
+    "postinstall": "cp node_modules/gopd/gopd.js node_modules/gopd/gOPD.js || true"
   },
   "keywords": [],
   "author": "",

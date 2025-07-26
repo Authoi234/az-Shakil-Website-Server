@@ -1,29 +1,30 @@
+// fix-gopd.js
 const fs = require('fs');
 const path = require('path');
 
-function copyFile(src, dest) {
-    try {
-        fs.copyFileSync(src, dest);
-        console.log(`Copied gOPD.js to ${dest}`);
-    } catch (e) {
-        // ignore errors
-    }
+const root = path.resolve(__dirname, 'node_modules');
+const target = 'gopd';
+const expected = 'gOPD.js';
+const actual = 'gopd.js';
+
+function fixCase(folder) {
+  const file = path.join(folder, actual);
+  const newFile = path.join(folder, expected);
+
+  if (fs.existsSync(file) && !fs.existsSync(newFile)) {
+    fs.copyFileSync(file, newFile);
+    console.log(`[fixed] ${expected} created in ${folder}`);
+  }
 }
 
-function walk(dir) {
-    for (const name of fs.readdirSync(dir)) {
-        const full = path.join(dir, name);
-        if (fs.statSync(full).isDirectory()) {
-            if (name === 'gopd') {
-                // ensure gOPD.js exists here
-                const src = path.resolve(__dirname, 'node_modules', 'gopd', 'gopd.js');  // lowercase 'gopd.js'
-                const dest = path.join(full, 'gOPD.js');  // rename to expected uppercase 'gOPD.js'
-                copyFile(src, dest);
-            }
-            walk(full);
-        }
+function walk(nodeModules) {
+  fs.readdirSync(nodeModules, { withFileTypes: true }).forEach(entry => {
+    if (entry.isDirectory()) {
+      const dir = path.join(nodeModules, entry.name);
+      if (entry.name === target) fixCase(dir);
+      else walk(dir); // recurse
     }
+  });
 }
 
-// start from node_modules
-walk(path.resolve(__dirname, 'node_modules'));
+walk(root);

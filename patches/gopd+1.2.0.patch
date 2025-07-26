@@ -1,0 +1,13 @@
+diff --git a/node_modules/gopd/index.js b/node_modules/gopd/index.js
+index a4081b0..97a9dbd 100644
+--- a/node_modules/gopd/index.js
++++ b/node_modules/gopd/index.js
+@@ -1,7 +1,7 @@
+ 'use strict';
+ 
+ /** @type {import('.')} */
+-var $gOPD = require('./gOPD');
++var $gOPD = require('./gopd');
+ 
+ if ($gOPD) {
+ 	try {

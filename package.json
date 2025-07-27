@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "node index.js",
-    "postinstall": "patch-package"
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -23,5 +22,8 @@
   "devDependencies": {
     "nodemon": "^3.1.10",
     "patch-package": "^8.0.0"
+  },
+  "overrides": {
+    "gopd": "file:./fixed_modules/gopd"
   }
 }

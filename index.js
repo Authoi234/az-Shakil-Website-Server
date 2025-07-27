@@ -32,7 +32,7 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: "jawadkhan.authoi@gmail.com",
         pass: process.env.GOOGLE_APP_PASSWORD, // Must be a real app password
-    },
+    }, 
 });
 
 async function run() {
